@@ -2,6 +2,8 @@
 
 A Laravel-based [Model Context Protocol](https://modelcontextprotocol.io) server for [EasyAppointments](https://easyappointments.org). It exposes your EasyAppointments instance as MCP tools so AI clients like Claude can manage appointments, customers, services, and providers on your behalf.
 
+> **Compatibility:** Built and tested against **EasyAppointments 1.6.0**. This MCP server communicates with EA via its REST API. Future EA versions may add, change, or remove API endpoints. Always verify compatibility against the [EasyAppointments changelog](https://github.com/alextselegidis/easyappointments/releases) before upgrading.
+
 ## How It Works
 
 ```
@@ -28,7 +30,7 @@ appointments-mcp.yourdomain.com/mcp
 
 - PHP 8.2+
 - Composer
-- A running [EasyAppointments](https://easyappointments.org) instance with the API enabled
+- EasyAppointments **1.6.0** with the API enabled (Settings → API → enable & copy secret token)
 
 ---
 
