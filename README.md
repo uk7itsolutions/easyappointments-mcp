@@ -55,6 +55,12 @@ git clone https://github.com/uk7itsolutions/easyappointments-mcp.git .
 composer install --no-dev --optimize-autoloader
 ```
 
+This will automatically create `.env` from `.env.example` and generate the application key. If you need to ensure `storage/` and `bootstrap/cache/` are writable by the web server (rare on Plesk, but possible):
+
+```bash
+chmod -R 775 storage bootstrap/cache
+```
+
 ### 4. Set the Document Root
 
 In Plesk → **Websites & Domains** → your subdomain → **Hosting Settings**,
