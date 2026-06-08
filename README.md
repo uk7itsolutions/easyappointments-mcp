@@ -22,8 +22,6 @@ appointments-mcp.yourdomain.com/mcp
 
 **Authentication** is handled entirely by EasyAppointments. Each user uses their own EA API key (found in EA → Backend → Settings → API) as the Bearer token. No separate user database is needed.
 
-**First-run installer** — on a fresh install, any request to the app redirects to `/setup`, a web wizard that collects your EA URL and API key, verifies the connection, and writes the configuration automatically.
-
 ---
 
 ## Requirements
@@ -55,13 +53,23 @@ git clone https://github.com/uk7itsolutions/easyappointments-mcp.git .
 composer install --no-dev --optimize-autoloader
 ```
 
-This will automatically create `.env` from `.env.example` and generate the application key. If you need to ensure `storage/` and `bootstrap/cache/` are writable by the web server (rare on Plesk, but possible):
+This creates `.env` from `.env.example` and generates the application key automatically. If `storage/` and `bootstrap/cache/` need to be writable by the web server:
 
 ```bash
 chmod -R 775 storage bootstrap/cache
 ```
 
-### 4. Set the Document Root
+### 4. Configure `.env`
+
+Open `.env` and set the EasyAppointments URL (no trailing slash):
+
+```env
+EA_BASE_URL=https://appointments.yourdomain.com
+```
+
+That's the only setting you need to change. The app reads it via `config/ea.php` and uses it for every API call.
+
+### 5. Set the Document Root
 
 In Plesk → **Websites & Domains** → your subdomain → **Hosting Settings**,
 set the document root to:
@@ -70,18 +78,28 @@ set the document root to:
 appointments-mcp.yourdomain.com/public
 ```
 
-### 5. Enable SSL
+### 6. Enable nginx Rewrites (Plesk)
+
+Plesk runs nginx in front of Apache. By default, nginx tries to serve every URL as a static file and returns 404 for routes like `/mcp`. To fix this:
+
+1. Plesk → **Websites & Domains** → your subdomain → **Apache & nginx Settings**
+2. In **Additional nginx directives**, paste:
+
+   ```nginx
+   location / {
+       try_files $uri $uri/ /index.php?$query_string;
+   }
+   ```
+
+3. Click **OK**.
+
+### 7. Enable SSL
 
 In Plesk → **SSL/TLS Certificates** → **Let's Encrypt** → check **Redirect HTTP to HTTPS** → **Get it free**.
 
-### 6. Run the Web Installer
+### 8. Verify
 
-Visit `https://appointments-mcp.yourdomain.com/setup` in your browser and complete the two-field form:
-
-- **EasyAppointments URL** — e.g. `https://appointments.yourdomain.com`
-- **API Key** — found in EasyAppointments → Backend → Settings → API
-
-The installer will verify the connection, write your `.env`, generate the app key, and show your final MCP endpoint on the confirmation screen.
+Visit `https://appointments-mcp.yourdomain.com/` — you should see a small JSON response showing the MCP endpoint URL. That confirms Laravel and the nginx rewrite are working.
 
 ---
 
@@ -131,11 +149,8 @@ Each user authenticates with their own EA API key.
 ```
 app/
 ├── Http/
-│   ├── Controllers/
-│   │   └── InstallerController.php   # Web installer logic
 │   └── Middleware/
-│       ├── ValidateEaApiKey.php       # Validates Bearer token against EA API
-│       └── RedirectIfNotInstalled.php # Redirects to /setup until configured
+│       └── ValidateEaApiKey.php       # Validates Bearer token against EA API
 ├── Mcp/
 │   ├── Servers/
 │   │   └── EasyAppointmentsServer.php # Registers all tools
@@ -145,13 +160,9 @@ app/
 
 routes/
 ├── ai.php    # Registers the MCP server at /mcp
-└── web.php   # Registers the installer at /setup
+└── web.php   # Health-check JSON at /
 
-resources/views/installer/
-├── index.blade.php     # Setup form
-└── complete.blade.php  # Success screen with client config
-
-bootstrap/app.php       # Middleware aliases + CSRF exclusion pre-configured
+bootstrap/app.php       # Middleware alias + CSRF exclusion for /mcp
 config/ea.php           # Reads EA_BASE_URL from .env
 ```
 
