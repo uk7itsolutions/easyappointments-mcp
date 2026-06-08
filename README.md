@@ -151,4 +151,6 @@ config/ea.php           # Reads EA_BASE_URL from .env
 
 ## License
 
-MIT
+This project is licensed under the [MIT License](LICENSE).
+
+It communicates with EasyAppointments solely via its REST API and contains no EasyAppointments source code. It is therefore an independent work and is not subject to EasyAppointments' GPLv3 licence.
