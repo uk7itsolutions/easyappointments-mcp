@@ -31,7 +31,7 @@ class EasyAppointmentsClient
 
     private function request(string $method, string $path, array $options = []): mixed
     {
-        $url = config('ea.base_url') . '/api/v1/' . ltrim($path, '/');
+        $url = config('ea.base_url') . '/index.php/api/v1/' . ltrim($path, '/');
 
         $response = Http::withToken($this->token)
             ->acceptJson()

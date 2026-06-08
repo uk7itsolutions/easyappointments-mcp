@@ -38,7 +38,7 @@ class ValidateEaApiKey
             $check = Http::withToken($token)
                 ->acceptJson()
                 ->timeout(5)
-                ->get($baseUrl.'/api/v1/settings');
+                ->get($baseUrl.'/index.php/api/v1/settings');
         } catch (ConnectionException $e) {
             Log::error('Could not reach EA API', [
                 'base_url' => $baseUrl,
