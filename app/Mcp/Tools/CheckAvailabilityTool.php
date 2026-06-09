@@ -19,18 +19,31 @@ class CheckAvailabilityTool extends Tool
         return [
             'selected_date' => $schema->string()->description('Date in YYYY-MM-DD format.')->required(),
             'service_id'    => $schema->integer()->description('Service ID.')->required(),
-            'provider_id'   => $schema->integer()->description('Provider ID (optional, omit for any provider.'),
+            'provider_id'   => $schema->integer()->description('Provider ID (optional, omit to check all providers offering the service).'),
         ];
     }
 
     public function handle(Request $request): Response
     {
-        $params = ['selected_date' => $request->get('selected_date'), 'service_id' => $request->get('service_id')];
+        $selectedDate = $request->get('selected_date');
+        $serviceId    = $request->get('service_id');
 
-        if ($request->has('provider_id')) {
-            $params['provider_id'] = $request->get('provider_id');
+        $providerIds = $request->has('provider_id')
+            ? [$request->get('provider_id')]
+            : collect($this->client->get('providers', ['serviceId' => $serviceId]))
+                ->pluck('id')
+                ->all();
+
+        $results = [];
+
+        foreach ($providerIds as $providerId) {
+            $results[$providerId] = $this->client->get('availabilities', [
+                'selected_date' => $selectedDate,
+                'service_id'    => $serviceId,
+                'provider_id'   => $providerId,
+            ]);
         }
 
-        return Response::text(json_encode($this->client->get('availabilities', $params)));
+        return Response::text(json_encode($results));
     }
 }
