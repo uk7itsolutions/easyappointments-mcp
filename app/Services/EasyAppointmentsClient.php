@@ -38,6 +38,12 @@ class EasyAppointmentsClient
             ->$method($url, $options['query'] ?? $options['json'] ?? []);
 
         if ($response->failed()) {
+            $json = $response->json();
+
+            if (is_array($json) && array_key_exists('message', $json)) {
+                return ['success' => false, 'status' => $response->status(), 'message' => $json['message']];
+            }
+
             throw new RuntimeException("EA API error {$response->status()}: {$response->body()}");
         }
 
