@@ -15,6 +15,11 @@ use App\Mcp\Tools\ListServicesTool;
 use App\Mcp\Tools\SearchCustomersTool;
 use App\Mcp\Tools\UpdateAppointmentTool;
 use App\Mcp\Tools\UpdateCustomerTool;
+use App\Mcp\Tools\ListUnavailabilitiesTool;
+use App\Mcp\Tools\GetUnavailabilityTool;
+use App\Mcp\Tools\CreateUnavailabilityTool;
+use App\Mcp\Tools\UpdateUnavailabilityTool;
+use App\Mcp\Tools\DeleteUnavailabilityTool;
 use Laravel\Mcp\Server;
 use Laravel\Mcp\Server\Attributes\Instructions;
 use Laravel\Mcp\Server\Attributes\Name;
@@ -39,5 +44,10 @@ class EasyAppointmentsServer extends Server
         ListServicesTool::class,
         ListProvidersTool::class,
         GetSettingsTool::class,
+        ListUnavailabilitiesTool::class,
+        GetUnavailabilityTool::class,
+        CreateUnavailabilityTool::class,
+        UpdateUnavailabilityTool::class,
+        DeleteUnavailabilityTool::class,
     ];
 }
