@@ -141,6 +141,11 @@ Each user authenticates with their own EA API key.
 | `list_services` | List all available services |
 | `list_providers` | List all providers, optionally filtered by service |
 | `get_settings` | Return instance settings (business name, hours, etc.) |
+| `list_unavailabilities` | List unavailabilities, optionally filtered by provider or date |
+| `get_unavailability` | Get full details for a single unavailability record |
+| `create_unavailability` | Create a new unavailability record |
+| `update_unavailability` | Update fields on an existing unavailability record |
+| `delete_unavailability` | Delete an unavailability record |
 
 ---
 
@@ -154,7 +159,7 @@ app/
 ├── Mcp/
 │   ├── Servers/
 │   │   └── EasyAppointmentsServer.php # Registers all tools
-│   └── Tools/                         # One class per MCP tool (13 total)
+│   └── Tools/                         # One class per MCP tool (18 total)
 └── Services/
     └── EasyAppointmentsClient.php     # HTTP client for EA REST API
 
