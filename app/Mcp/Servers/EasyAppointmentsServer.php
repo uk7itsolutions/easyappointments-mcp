@@ -30,6 +30,13 @@ use Laravel\Mcp\Server\Attributes\Version;
 #[Instructions('Manage appointments, customers, services, and providers in EasyAppointments.')]
 class EasyAppointmentsServer extends Server
 {
+    // tools/list is paginated; package defaults are 15 per page (max 50).
+    // Raise both so all registered tools are returned in a single response,
+    // with headroom for future tools. defaultPaginationLength must be <= maxPaginationLength.
+    public int $maxPaginationLength = 100;
+
+    public int $defaultPaginationLength = 100;
+
     protected array $tools = [
         CheckAvailabilityTool::class,
         ListAppointmentsTool::class,
